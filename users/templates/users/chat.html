@@ -16,6 +16,7 @@
 
 
 
+
     </style>
     <title>Your Chats</title>
 </head>
@@ -89,17 +90,19 @@
         </form>
 
         <ul class="message-list">
-    {% for message in chat.message_set.all %}
-        {% if message.sender == user %}
-            <li class="user-message" style="text-align: right;">{{ message.content }}</li>
-        {% elif message.sender.is_staff %}
-            <li class="admin-message" style="text-align: left; color: red;">{{ message.sender.username }}: {{ message.content }}</li>
-        {% else %}
-            <li class="other-message" style="text-align: left;">{{ message.sender.username }}: {{ message.content }}</li>
-        {% endif %}
-    {% endfor %}
-</ul>
-
+            {% for message in chat.message_set.all %}
+                {% if message.sender == user %}
+                    <li class="user-message" style="text-align: right;">{{ message.content }}</li>
+                {% elif message.sender.is_staff %}
+                    <li class="admin-message" style="text-align: left;"><span
+                        style="color: red;">{{ message.sender.username }}</span>: {{ message.content }}
+                    </li>
+                {% else %}
+                    <li class="other-message" style="text-align: left;">{{ message.sender.username }}: {{ message.content }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
         {% endif %}
 
         <hr>
@@ -118,6 +121,7 @@
             e.stopPropagation();
         });
     });
+
 
 
 
