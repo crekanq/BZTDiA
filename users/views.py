@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User
@@ -49,6 +50,11 @@ class SignInView(View):
             if user is not None:
                 login(request, user)
                 return redirect('/')
+            else:
+                messages.error(request, 'Invalid username or password.')
+        else:
+            messages.error(request, 'Invalid form submission. Please check your input.')
+
         return render(request, self.template_name, {'form': form})
 
 

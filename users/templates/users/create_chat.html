@@ -54,7 +54,7 @@
     <form method="post" action="{% url 'create_chat' %}">
         {% csrf_token %}
         <label for="chat_name">Chat Name:</label>
-        <input type="text" name="chat_name" id="chat_name" class="form-control">
+        <input type="text" name="chat_name" id="chat_name" class="form-control"><br>
 
         {% for user in users %}
         <div class="form-check">

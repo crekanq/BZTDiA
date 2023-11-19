@@ -11,17 +11,44 @@
           href='http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900&subset=latin,latin-ext'>
     <link rel="stylesheet" href="{% static 'vendor/css/style.css' %}">
 
-    <style>
+   <style>
         /* Add this to your existing CSS or create a new style tag */
         .admin {
             background-color: yellow; /* You can change the style as needed */
             font-weight: bold;
         }
 
+        /* Add styles for error messages */
+        .error-messages {
+            background-color: #ff4d4d; /* Red background color */
+            color: #fff; /* White text color */
+            padding: 10px; /* Padding for better appearance */
+            margin-bottom: 10px; /* Margin to separate from other elements */
+        }
+
+        .error-messages ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .error-messages li {
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 
 <body>
+{% if messages %}
+        <div class="error-messages">
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
 <div class="materialContainer">
     <form method="post" action="{% url 'signin' %}">
         {% csrf_token %}
