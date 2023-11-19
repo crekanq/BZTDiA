@@ -42,14 +42,26 @@
 
 <div class="create-chat-container">
     <h2>Create a Chat</h2>
+
+    <!-- Add this snippet to display error messages -->
+    {% if error_message %}
+        <div class="alert alert-danger" role="alert">
+            {{ error_message }}
+        </div>
+    {% endif %}
+
     <form method="post" action="{% url 'create_chat' %}">
         {% csrf_token %}
+        <label for="chat_name">Chat Name:</label>
+        <input type="text" name="chat_name" id="chat_name" class="form-control">
+
         {% for user in users %}
         <div class="form-check">
             <input type="checkbox" class="form-check-input" name="selected_users" value="{{ user.id }}" id="user{{ user.id }}">
             <label class="form-check-label" for="user{{ user.id }}">{{ user.username }}</label>
         </div>
         {% endfor %}
+
         <button type="submit" class="btn btn-primary">Create Chat</button>
     </form>
 </div>

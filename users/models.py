@@ -5,9 +5,10 @@ from django.db import models
 class Chat(models.Model):
     users = models.ManyToManyField(User)
     hidden = models.BooleanField(default=True)
+    name = models.CharField(max_length=255, blank=False, null=True)
 
     def __str__(self):
-        return f'Чат с id {self.id}'
+        return f'Чат - {self.name}'
 
 
 class Message(models.Model):

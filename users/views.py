@@ -22,10 +22,8 @@ class SignUpView(View):
         if form.is_valid():
             user = form.save()
 
-            # Create a common chat
             common_chat, created = Chat.objects.get_or_create()
 
-            # Add the new user to the common chat
             common_chat.users.add(user)
 
             login(request, user)
@@ -70,9 +68,25 @@ class CreateChatView(UserPassesTestMixin, View):
     def post(self, request):
         selected_users_ids = request.POST.getlist('selected_users')
         users = User.objects.filter(id__in=selected_users_ids)
+
+        if not users:
+            users = User.objects.exclude(id=request.user.id)
+            return render(request, self.template_name,
+                          {'users': users, 'error_message': 'Select at least one user to create a chat'})
+
         chat = Chat.objects.create()
-        chat.users.add(request.user, *users)
-        return redirect('/')
+        chat_name = request.POST.get('chat_name')
+
+        if not chat_name:
+            return render(request, self.template_name, {'users': users, 'error_message': 'Chat name is required'})
+
+        if request.user == chat.users.first() or request.user.is_staff:
+            chat.name = request.POST.get('chat_name')
+            chat.save()
+            chat.users.add(request.user, *users)
+            return redirect('/')
+        else:
+            return redirect('signin')
 
 
 class ChatView(UserPassesTestMixin, View):
@@ -85,18 +99,14 @@ class ChatView(UserPassesTestMixin, View):
         return redirect('signin')
 
     def get(self, request):
-        # Fetch the common chat
         common_chat, created = Chat.objects.get_or_create()
 
-        # Fetch all user chats, including the common chat
         user_chats = Chat.objects.filter(users=request.user)
 
-        # Combine user chats and the common chat
         all_chats = user_chats | Chat.objects.filter(id=common_chat.id)
 
         message_form = MessageForm()
         return render(request, self.template_name, {'chats': all_chats, 'message_form': message_form})
-
 
     def post(self, request):
         message_form = MessageForm(request.POST)

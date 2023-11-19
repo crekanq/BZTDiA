@@ -13,10 +13,6 @@
         .admin-user {
             color: red; /* or any other styling for admin users */
         }
-
-
-
-
     </style>
     <title>Your Chats</title>
 </head>
@@ -37,7 +33,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-bs-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">
+                       aria-expanded="false">
                         {{ user.username }}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -57,7 +53,7 @@
 
     {% for chat in chats %}
     <div class="chat">
-        <div class="chat-id">Chat ID: {{ chat.id }}</div>
+        <div class="chat-id">Chat: {{ chat.name }}</div>
 
         <form method="post" action="{% url 'chat' %}">
             {% csrf_token %}
@@ -91,16 +87,16 @@
 
         <ul class="message-list">
             {% for message in chat.message_set.all %}
-                {% if message.sender == user %}
-                    <li class="user-message" style="text-align: right;">{{ message.content }}</li>
-                {% elif message.sender.is_staff %}
-                    <li class="admin-message" style="text-align: left;"><span
-                        style="color: red;">{{ message.sender.username }}</span>: {{ message.content }}
-                    </li>
-                {% else %}
-                    <li class="other-message" style="text-align: left;">{{ message.sender.username }}: {{ message.content }}
-                    </li>
-                {% endif %}
+            {% if message.sender == user %}
+            <li class="user-message" style="text-align: right;">{{ message.content }}</li>
+            {% elif message.sender.is_staff %}
+            <li class="admin-message" style="text-align: left;"><span
+                    style="color: red;">{{ message.sender.username }}</span>: {{ message.content }}
+            </li>
+            {% else %}
+            <li class="other-message" style="text-align: left;">{{ message.sender.username }}: {{ message.content }}
+            </li>
+            {% endif %}
             {% endfor %}
         </ul>
         {% endif %}
@@ -121,6 +117,11 @@
             e.stopPropagation();
         });
     });
+
+
+
+
+
 
 
 
