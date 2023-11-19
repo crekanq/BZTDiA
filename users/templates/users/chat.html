@@ -13,6 +13,9 @@
         .admin-user {
             color: red; /* or any other styling for admin users */
         }
+
+
+
     </style>
     <title>Your Chats</title>
 </head>
@@ -66,17 +69,18 @@
         <form method="post" action="{% url 'chat' %}" class="message-form">
             <!-- New dropdown list for users in the chat -->
             <div class="dropdown">
-    <button class="btn btn-secondary dropdown-toggle" type="button" id="userDropdown{{ chat.id }}"
-            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Users
-    </button>
-    <div class="dropdown-menu" aria-labelledby="userDropdown{{ chat.id }}">
-        {% for user in chat.users.all %}
-        <span class="dropdown-item {% if user.is_staff %}admin-user{% endif %}" style="pointer-events: none;">{{ user.username }}</span>
-        {% endfor %}
-    </div>
-</div>
-<br>
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="userDropdown{{ chat.id }}"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Users
+                </button>
+                <div class="dropdown-menu" aria-labelledby="userDropdown{{ chat.id }}">
+                    {% for user in chat.users.all %}
+                    <span class="dropdown-item {% if user.is_staff %}admin-user{% endif %}"
+                          style="pointer-events: none;">{{ user.username }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <br>
 
             {% csrf_token %}
             <input type="text" name="content" class="message-input" placeholder="Type your message">
@@ -85,10 +89,17 @@
         </form>
 
         <ul class="message-list">
-            {% for message in chat.message_set.all %}
-            <li class="message">{{ message.sender.username }}: {{ message.content }}</li>
-            {% endfor %}
-        </ul>
+    {% for message in chat.message_set.all %}
+        {% if message.sender == user %}
+            <li class="user-message" style="text-align: right;">{{ message.content }}</li>
+        {% elif message.sender.is_staff %}
+            <li class="admin-message" style="text-align: left; color: red;">{{ message.sender.username }}: {{ message.content }}</li>
+        {% else %}
+            <li class="other-message" style="text-align: left;">{{ message.sender.username }}: {{ message.content }}</li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
         {% endif %}
 
         <hr>
@@ -107,6 +118,9 @@
             e.stopPropagation();
         });
     });
+
+
+
 </script>
 </body>
 </html>
